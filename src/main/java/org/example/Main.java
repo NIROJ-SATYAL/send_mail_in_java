@@ -1,19 +1,91 @@
 package org.example;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.NewsAddress;
+import java.util.Properties;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+
+
 public class Main {
     public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
+
         System.out.printf("Hello and welcome!");
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+        String message="message";
+        String subject="subject";
+        String to="receiver mail";
+        String from="sender mail";
 
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
+
+       sendemail(message,subject,to,from);
+
+
+
+
+    }
+
+
+    public static void sendemail(String message,String subject,String to,String from ){
+
+
+//        variable for gmail
+        String host = "smtp.gmail.com";
+
+//        load the properties
+
+
+        Properties  properties=System.getProperties();
+//        System.out.println("system properties" + properties);
+
+//        setting important information to system
+
+//        put host
+
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", "465");
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.auth", "true");
+
+//        step 1: To get the session object
+        Session session= Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
+//            it check the whether the email address exist or not
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("enter mail here (sender mail)", "enter password here");
+
+            }
+        });
+
+
+                session.setDebug(true);
+
+//        compose the message
+        Message m= new MimeMessage(session);
+
+        try {
+
+
+
+
+
+
+
+
+            m.setFrom(new InternetAddress(from));
+            m.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            m.setSubject(subject);
+            m.setText(message);
+//        step 3 send the message using Transport class;
+            Transport.send(m);
+            System.out.println("send successfully.....");
+        } catch (MessagingException me)
+        {
+            me.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+
     }
 }
